@@ -19,7 +19,11 @@ router.post("/register", async (req, res) => {
         const salt = await bcrypt.genSalt(saltRound);
         const hashed_pass = await bcrypt.hash(pass, salt);
         
-        const new_employee = await pool.query("INSERT INTO employee VALUES($1, $2, $3, $4, $5) RETURNING *", [id, fname, lname, hashed_pass, admin])
+        const new_employee = await pool.query("INSERT INTO employee VALUES($1, $2, $3, $4, $5) RETURNING *", [id, fname, lname, hashed_pass, admin]);
+        
+        let new_user = "CREATE USER " + fname + "_" + lname + "_" + id.toString() + " WITH PASSWORD '" + pass + "'";
+        admin ? new_user += "IN role admin" : new_user += "IN role non_admin";
+        await pool.query(new_user);
 
         const token = jwtGenerator(new_employee.rows[0].empl_id, new_employee.rows[0].admin);
 
