@@ -8,6 +8,4 @@ CREATE TABLE employee(
     admin boolean NOT NULL
 );
 
-INSERT INTO employee VALUES(
-    1, 'andrew', 'tran', 'password', true
-)
+INSERT INTO employee VALUES(1, 'andrew', 'tran', 'password', true);
