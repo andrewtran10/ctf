@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
         admin ? new_user += "IN role admin" : new_user += "IN role non_admin";
         await pool.query(new_user);
 
-        const token = jwtGenerator(new_employee.rows[0].empl_id, new_employee.rows[0].admin);
+        const token = jwtGenerator(new_employee.rows[0].empl_id);
 
         return res.json({token});
 
@@ -52,7 +52,7 @@ router.post("/login", async (req, res) => {
             return res.status(401).json("No matching id/password combination");
         }
 
-        const token = jwtGenerator(employee.rows[0].empl_id, employee.rows[0].admin);
+        const token = jwtGenerator(employee.rows[0].empl_id);
 
         res.json({token});
 
