@@ -2,9 +2,9 @@ CREATE DATABASE ctf;
 
 CREATE TABLE employee(
     empl_id int PRIMARY KEY,
-    fname text NOT NULL,
-    lname text NOT NULL,
-    pass text NOT NULL,
+    fname varchar(255) NOT NULL,
+    lname varchar(255) NOT NULL,
+    pass varchar(255) NOT NULL,
     admin boolean NOT NULL
 );
 
