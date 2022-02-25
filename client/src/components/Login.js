@@ -32,8 +32,6 @@ const Login = ({setAuth}) =>  {
                 }
             );
             
-            console.log(formValues);
-
             const parsedRes = await res.json();
 
             if (parsedRes.token) {
