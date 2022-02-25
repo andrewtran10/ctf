@@ -7,7 +7,7 @@ app.use(express.json());
 
 app.use("/auth", require("./routes/jwtAuth"));
 
-app.use("/dash", require("./routes/dashboard"));
+app.use("/dashboard", require("./routes/dashboard"));
 
 
 app.listen(5000, () => {
