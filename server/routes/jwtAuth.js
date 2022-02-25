@@ -20,7 +20,7 @@ router.post("/register", async (req, res) => {
         
         await pool.query("BEGIN TRANSACTION");
         const new_employee = await pool.query("INSERT INTO employee VALUES($1, $2, $3, $4, $5) RETURNING *", [id, fname, lname, hashed_pass, admin]);
-        let new_user = "CREATE USER " + fname + "_" + lname + "_" + id.toString() + " WITH PASSWORD '" + pass + "'";
+        let new_user = "CREATE USER u" + id.toString() + " WITH PASSWORD '" + pass + "'";
         admin ? new_user += "IN role admin" : new_user += "IN role non_admin";
         await pool.query(new_user);
         await pool.query("COMMIT");
