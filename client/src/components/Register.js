@@ -42,6 +42,8 @@ const Register = ({ setAuth }) =>  {
 
             const parsedRes = await res.json();
 
+            console.log(formValues);
+
             if (parsedRes.token) {
                 localStorage.setItem("token", parsedRes.token);
                 setAuth(true);
@@ -63,7 +65,7 @@ const Register = ({ setAuth }) =>  {
                 justifyContent="center" 
                 alignItems="center"
             >
-                <Typography variant='h1'component='div' gutterBottom> Register </Typography>
+                <Typography variant='h3'component='div' gutterBottom> Register New Employee </Typography>
             </Box>
                 <Grid container alignItems="center" justify="center" direction="column">
                     <form noValidate autoComplete='off' onSubmit={handleSubmit}>
@@ -102,8 +104,8 @@ const Register = ({ setAuth }) =>  {
                         <br/>
                         <Grid item>
                         <TextField
-                            id="password"
-                            name="password"
+                            id="pass"
+                            name="pass"
                             label="Password"
                             type="text"
                             value={formValues.password}
