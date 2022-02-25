@@ -45,11 +45,11 @@ const Register = ({ setAuth }) =>  {
             console.log(formValues);
 
             if (parsedRes.token) {
-                localStorage.setItem("token", parsedRes.token);
-                setAuth(true);
+                //localStorage.setItem("token", parsedRes.token);
+                //setAuth(true);
                 toast.success("Created new employee in database");
             } else {
-                setAuth(false);
+                //setAuth(false);
                 toast.error(parsedRes);
             }
 

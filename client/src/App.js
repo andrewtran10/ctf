@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import './App.css';
 
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
@@ -14,6 +14,25 @@ toast.configure();
 
 function App() {
   const [authed, setAuthed] = useState(false);
+
+  useEffect(async ()=>{
+    try {
+      const res = await fetch(
+        "http://localhost:5000/auth/verify", 
+        {
+          method: "GET",
+          headers: {token: localStorage.token}
+        }
+      );
+      
+      const parsedRes = await res.json()
+      
+      parsedRes ? setAuthed(true) : setAuthed(false);
+
+    } catch (error) {
+      console.error(error.message);
+    }
+  });
 
   return (
     <Fragment>
