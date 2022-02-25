@@ -1,9 +1,41 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from 'react';
 import './App.css';
 
+import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
+
+import Dashboard from './components/Dashboard';
+import Register from './components/Register';
+import Login from './components/Login';
+
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+toast.configure();
+
 function App() {
+  const [authed, setAuthed] = useState(false);
+
   return (
-    <Fragment></Fragment>
+    <Fragment>
+      <Router>
+        <div className='container'>
+          <Routes>
+            <Route 
+              exact path='/login' 
+              element={!authed ? (<Login setAuth={setAuthed}/>) : (<Navigate to="/dashboard" />) } 
+            />
+            <Route 
+              exact path='/register' 
+              element={!authed ? (<Register setAuth={setAuthed}/>) : (<Navigate to="/login" />) } 
+            />
+            <Route 
+              exact path='/dashboard' 
+              element={authed ? (<Dashboard setAuth={setAuthed}/>) : (<Navigate to="/login" />)} 
+            />
+          </Routes>
+        </div>
+      </Router>
+    </Fragment>
   );
 }
 
