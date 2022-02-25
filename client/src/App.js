@@ -27,12 +27,12 @@ function App() {
       
       const parsedRes = await res.json()
       
-      parsedRes ? setAuthed(true) : setAuthed(false);
+      (parsedRes === true) ? setAuthed(true) : setAuthed(false);
 
     } catch (error) {
       console.error(error.message);
     }
-  });
+  }, []);
 
   return (
     <Fragment>
