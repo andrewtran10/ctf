@@ -11,7 +11,6 @@ module.exports = async (req, res, next) => {
         const payload = jwt.verify(jwtToken, process.env.jwtSecret);
 
         req.id = payload.id;
-        req.admin = payload.admin;
         
         next();
 
