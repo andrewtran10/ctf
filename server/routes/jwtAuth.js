@@ -11,7 +11,7 @@ router.post("/register", async (req, res) => {
         const employee = await pool.query("SELECT * FROM employee WHERE id = $1", [id]);
 
         if (employee.rows.length !== 0) {
-            return res.status(401).json("Employee already in database");
+            return res.status(401).json("Employee ID already in use");
         }
 
         const saltRound = 10;
@@ -31,7 +31,7 @@ router.post("/register", async (req, res) => {
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).send("Server error");
+        res.status(500).json("Server error");
     }
 });
 
@@ -43,13 +43,13 @@ router.post("/login", async (req, res) => {
         const employee = await pool.query("SELECt * FROM employee WHERE id = $1", [id]);
 
         if (employee.rows.length === 0) {
-            return res.status(401).json("No matching id/password combination");
+            return res.status(401).json("No matching id");
         }
-        
+
         const validPassword = await bcrypt.compare(pass, employee.rows[0].pass);
         
         if (!validPassword) {
-            return res.status(401).json("No matching id/password combination");
+            return res.status(401).json("Incorrect password");
         }
 
         const token = jwtGenerator(employee.rows[0].id);
@@ -58,7 +58,7 @@ router.post("/login", async (req, res) => {
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).send("Server error");   
+        res.status(500).json("Server error");   
     }
 });
 
@@ -67,7 +67,7 @@ router.get("/verify", authorization, async (req, res) => {
         res.json(true);
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("Server error");
+        res.status(500).json("Server error");
     }
 })
 
