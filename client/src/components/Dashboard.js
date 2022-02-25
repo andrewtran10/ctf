@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { Button } from '@mui/material';
 import { toast } from 'react-toastify';
 
 const Dashboard = ({setAuth}) =>  {
@@ -17,8 +18,10 @@ const Dashboard = ({setAuth}) =>  {
     return (
         <Fragment>
             <h1> Dashboard </h1>
-            <button onClick={e => logout(e)
-            }> Logout </button>
+            <Button 
+                onClick={e => logout(e)}
+                color="primary"
+            > Logout </Button>
         </Fragment>
     );
 };
