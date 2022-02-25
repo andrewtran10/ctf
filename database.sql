@@ -1,7 +1,7 @@
 CREATE DATABASE ctf;
 
 CREATE TABLE employee(
-    empl_id int PRIMARY KEY,
+    id int PRIMARY KEY,
     fname varchar(255) NOT NULL,
     lname varchar(255) NOT NULL,
     pass varchar(255) NOT NULL,
@@ -14,3 +14,5 @@ CREATE USER andrew WITH PASSWORD 'password';
 
 CREATE role non_admin
 CREATE role admin
+
+DROP USER andrew;
