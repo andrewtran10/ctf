@@ -10,6 +10,15 @@ import Login from './components/Login';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { createTheme, ThemeProvider } from '@mui/material';
+import { CssBaseline } from '@mui/material';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark'
+  }
+})
+
 toast.configure();
 
 function App() {
@@ -27,6 +36,8 @@ function App() {
       
       const parsedRes = await res.json()
       
+      console.log(parsedRes);
+      
       (parsedRes === true) ? setAuthed(true) : setAuthed(false);
 
     } catch (error) {
@@ -35,26 +46,30 @@ function App() {
   }, []);
 
   return (
-    <Fragment>
-      <Router>
-        <div className='container'>
-          <Routes>
-            <Route 
-              exact path='/login' 
-              element={!authed ? (<Login setAuth={setAuthed}/>) : (<Navigate to="/dashboard" />) } 
-            />
-            <Route 
-              exact path='/register' 
-              element={!authed ? (<Register setAuth={setAuthed}/>) : (<Navigate to="/login" />) } 
-            />
-            <Route 
-              exact path='/dashboard' 
-              element={authed ? (<Dashboard setAuth={setAuthed}/>) : (<Navigate to="/login" />)} 
-            />
-          </Routes>
-        </div>
-      </Router>
-    </Fragment>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline/>
+      <Fragment>
+        <Router>
+          <div className='container'>
+            <Routes>
+              <Route 
+                exact path='/login' 
+                element={!authed ? (<Login setAuth={setAuthed}/>) : (<Navigate to="/dashboard" />) } 
+              />
+              <Route 
+                exact path='/register' 
+                element={!authed ? (<Register setAuth={setAuthed}/>) : (<Navigate to="/login" />) } 
+              />
+              <Route 
+                exact path='/dashboard' 
+                element={authed ? (<Dashboard setAuth={setAuthed}/>) : (<Navigate to="/login" />)} 
+              />
+            </Routes>
+          </div>
+        </Router>
+      </Fragment>
+    </ThemeProvider>
+
   );
 }
 
