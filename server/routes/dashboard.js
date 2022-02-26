@@ -4,13 +4,13 @@ const authorization = require("../middleware/authorization");
 
 router.get("/", authorization, async (req,res) => {
     try {
-        const user = await pool.query("SELECT empl_id, fname, lname, admin FROM employee id = $1", [req.id]);
-        
-        res.json(user.rows[0]);
+        const employee = await pool.query("SELECT id, fname, lname, admin FROM employee where id = $1", [req.id]);
+
+        res.json(employee.rows[0]);
         
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("Sever error");
+        res.status(500).json("Sever error");
     }
 });
 
