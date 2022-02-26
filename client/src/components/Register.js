@@ -1,9 +1,11 @@
-import React, { Fragment , useState } from 'react';
+import { React, Fragment , useState } from 'react';
 import { TextField, Checkbox, Button } from '@mui/material';
 import {  FormControlLabel } from '@mui/material';
 import { Box, Grid, Typography } from '@mui/material';
 
 import { toast } from 'react-toastify';
+
+import axios from 'axios';
 
 const defaultValues = {
     id: "",
@@ -13,7 +15,7 @@ const defaultValues = {
     admin: false
 }
 
-const Register = ({ setAuth }) =>  {
+const Register = () =>  {
     const [formValues, setFormValues] = useState(defaultValues);
 
     const handleInputChange = (e) => {
@@ -30,7 +32,7 @@ const Register = ({ setAuth }) =>  {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {            
-            const res = await fetch(
+            /*const res = await fetch(
                 "http://localhost:5000/auth/register", 
                 {
                     method: "POST",
@@ -39,19 +41,24 @@ const Register = ({ setAuth }) =>  {
                     body: JSON.stringify(formValues)
                 }
             );
-
+            
             const parsedRes = await res.json();
 
-            console.log(formValues);
-
             if (parsedRes.token) {
-                //localStorage.setItem("token", parsedRes.token);
-                //setAuth(true);
                 toast.success("Created new employee in database");
             } else {
-                //setAuth(false);
                 toast.error(parsedRes);
             }
+
+            */
+
+            const res = await axios.post("http://localhost:5000/auth/register", formValues)
+                                    .then(res => {
+                                        toast.success("Created new employeein database");
+                                    })
+                                    .catch(err => {
+                                        toast.error(err.response.data);
+                                    });
 
         } catch (error) {
             console.error(error.message);
@@ -65,7 +72,7 @@ const Register = ({ setAuth }) =>  {
                 justifyContent="center" 
                 alignItems="center"
             >
-                <Typography variant='h3'component='div' gutterBottom> Register New Employee </Typography>
+                <Typography variant='h5'component='div' gutterBottom> Register New Employee </Typography>
             </Box>
                 <Grid container alignItems="center" justify="center" direction="column">
                     <form noValidate autoComplete='off' onSubmit={handleSubmit}>

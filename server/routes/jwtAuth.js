@@ -43,13 +43,13 @@ router.post("/login", async (req, res) => {
         const employee = await pool.query("SELECt * FROM employee WHERE id = $1", [id]);
 
         if (employee.rows.length === 0) {
-            return res.status(401).json("No matching id");
+            return res.status(401).send("No matching id");
         }
 
         const validPassword = await bcrypt.compare(pass, employee.rows[0].pass);
         
         if (!validPassword) {
-            return res.status(401).json("Incorrect password");
+            return res.status(401).send("Incorrect password");
         }
 
         const token = jwtGenerator(employee.rows[0].id);
@@ -58,7 +58,7 @@ router.post("/login", async (req, res) => {
 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json("Server error");   
+        res.status(500).send("Server error");   
     }
 });
 

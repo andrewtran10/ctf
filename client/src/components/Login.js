@@ -4,11 +4,12 @@ import { Box, Grid, Typography } from '@mui/material';
 
 import { toast } from 'react-toastify';
 
+import axios from 'axios';
+
 const defaultValues = {
     id: "",
     pass: ""
 }
-
 
 const Login = ({setAuth}) =>  {
     const [formValues, setFormValues] = useState(defaultValues);
@@ -22,7 +23,7 @@ const Login = ({setAuth}) =>  {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {            
-            const res = await fetch(
+            /*const res = await fetch(
                 "http://localhost:5000/auth/login", 
                 {
                     method: "POST",
@@ -33,21 +34,39 @@ const Login = ({setAuth}) =>  {
             );
             
             const parsedRes = await res.json();
-
+            
             if (parsedRes.token) {
-                localStorage.setItem("token", parsedRes.token);
+                localStorage.setItem("token", data.token);
                 setAuth(true);
                 toast.success("Login successful");
             } else {
                 setAuth(false);
-                toast.error(parsedRes);
+                toast.error(data);
             }
+            */
+
+            const res = await axios.post("http://localhost:5000/auth/login", formValues)
+                                    .then(
+                                        res => {
+                                            localStorage.setItem("token", res.data.token);
+                                            setAuth(true);
+                                            toast.success("Login successful");
+                                        }
+                                    )
+                                    .catch(
+                                        err => {
+                                            setAuth(false);
+                                            toast.error(err.response.data);
+                                        }
+                                    )
 
         } catch (error) {
             console.error(error.message);
         }
       };
     
+    
+
     return (
         <Fragment>
             <Box 
