@@ -32,18 +32,14 @@ function App() {
           method: "GET",
           headers: {token: localStorage.token}
         }
-      );
-      
-      const parsedRes = await res.json()
-      
-      console.log(parsedRes);
-      
-      (parsedRes === true) ? setAuthed(true) : setAuthed(false);
+      ).then(res => res.json());
+                  
+      (res === true) ? setAuthed(true) : setAuthed(false);
 
     } catch (error) {
       console.error(error.message);
     }
-  }, []);
+  });
 
   return (
     <ThemeProvider theme={darkTheme}>
