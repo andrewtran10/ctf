@@ -1,12 +1,13 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const fileUpload = require("express-fileupload");
 
 app.use(cors());
+app.use(fileUpload({createParentPath: true}));
 app.use(express.json());
 
 app.use("/auth", require("./routes/jwtAuth"));
-
 app.use("/dashboard", require("./routes/dashboard"));
 
 

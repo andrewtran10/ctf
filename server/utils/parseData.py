@@ -1,8 +1,8 @@
 import sys
 import pickle as pkl
-from venv import create
 import psycopg2 as pg
 from csv import reader
+import os
 
 
 class DataTable:
@@ -29,14 +29,14 @@ class MaliciousPickle:
 
 def main():
     try:
-        uploaded_file, id, password = sys.argv[1:]
+        uploaded_file, id = sys.argv[1:]
 
         file = open(uploaded_file, "rb")
         table = pkl.loads(file.read())
         file.close()
 
         
-        conn = pg.connect(dbname="ctf", user=f"u{id}", password=password)
+        conn = pg.connect(dbname="ctf", user=f"u{id}")
         cur = conn.cursor()
         
         createQuery = f"CREATE TABLE {table.name} (idx int primary key, "
@@ -66,12 +66,19 @@ def main():
             cur.execute(insertQuery, table.data[i])
 
         conn.commit()
-
         cur.close()
         conn.close()
-    except:
-        print("FAIL")
-    
 
-if __name__ == "__main__":
-    main()
+        with open(f"../pkl_files/u{id}/out", "w") as f:
+            f.write("success")
+
+        print("success")
+
+
+    except:
+        with open(f"../pkl_files/u{id}/out", "w") as f:
+            f.write("fail")
+
+        print("fail")
+
+main()

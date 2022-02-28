@@ -6,7 +6,7 @@ import { Select, Button } from '@mui/material';
 import { Typography } from '@mui/material';
 import { FormControl, Input } from '@mui/material';
 
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import Register from './Register';
 
 import axios from 'axios';
@@ -60,18 +60,25 @@ const Dashboard = ({setAuth}) =>  {
         setTable(event.target.value);
     };
 
-    const handleTransform = async () => {
+    const handleDelete = async () => {
         if (table === "") {
             toast.error("No table selected");
             return;
         }
         try {
-            await fetch("http://localhost:5000/dashboard/transform",
+            await fetch("http://localhost:5000/dashboard/delete",
                 {
                     method: "GET",
-                    headers: {token: localStorage.token, id: employeeData.id, table: table}
+                    headers: {token: localStorage.token, table: table}
                 }
             )
+            .then( res => {
+                toast.success("Successfully deleted table");
+                setTable("");
+            })
+            .catch( err => {
+                toast.error("Error in deleting table");
+            });
         } catch (error) {
             console.error(error.message);
         }
@@ -82,12 +89,34 @@ const Dashboard = ({setAuth}) =>  {
     }
 
     const handleUpload = async () => {
-        console.log(file);
+        const formData = new FormData();
+        formData.append("pickle_file", file);
+        formData.append("id", employeeData.id);
+        formData.append("token", localStorage.token);
+        try {
+            const res = await axios("http://localhost:5000/dashboard/upload", 
+                {
+                    method: "POST",
+                    data: formData,
+                    headers: { "Content-Type": "multipart/form-data" , "token": localStorage.token}
+                })
+                .then(res => {
+                    toast.success("File successfully uploaded to database");
+                })
+                .catch(err => {
+                    toast.error("Error in uploading file or table already exists with that name");
+                })
+                
+        } catch (error) {
+            console.error(error.message);
+        }
+
+        setFile(null);
     };
 
     useEffect(() => {
         getEmployeeData();
-    }, []);
+    });
 
     return (
         <Fragment>
@@ -129,14 +158,11 @@ const Dashboard = ({setAuth}) =>  {
                     </Grid>
 
                     <Grid item>
-                        <label htmlFor='pkl-upload'>
-                            <input
-                                id='pkl-upload'
-                                name='pkl-uoload'
-                                type='file'
-                                onChange={fileChange}
-                            />
-                        </label>
+                        <input
+                            name='pkl_file'
+                            type='file'
+                            onChange={fileChange}
+                        />
                         <Button
                                 variant="contained"
                                 color='primary'
@@ -158,7 +184,7 @@ const Dashboard = ({setAuth}) =>  {
                     alignItems="center"
                 >
                     <Grid item>
-                        <Typography variant='h5'> Select table for transform </Typography>
+                        <Typography variant='h5'> Delete table from database </Typography>
                     </Grid>
                     <Grid item>
                         <FormControl style={{minWidth: 150}}>
@@ -181,9 +207,9 @@ const Dashboard = ({setAuth}) =>  {
                         <Button 
                             variant='contained' 
                             color='primary' 
-                            onClick={handleTransform}
+                            onClick={handleDelete}
                         > 
-                            Transform 
+                            Delete
                         </Button>
                     </Grid>
                 </Grid>
