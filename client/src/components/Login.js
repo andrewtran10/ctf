@@ -23,42 +23,20 @@ const Login = ({setAuth}) =>  {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {            
-            /*const res = await fetch(
-                "http://localhost:5000/auth/login", 
-                {
-                    method: "POST",
-                    mode: "cors",
-                    headers: {"Content-type": "application/json"},
-                    body: JSON.stringify(formValues)
-                }
-            );
-            
-            const parsedRes = await res.json();
-            
-            if (parsedRes.token) {
-                localStorage.setItem("token", data.token);
-                setAuth(true);
-                toast.success("Login successful");
-            } else {
-                setAuth(false);
-                toast.error(data);
-            }
-            */
-
             const res = await axios.post("http://localhost:5000/auth/login", formValues)
-                                    .then(
-                                        res => {
-                                            localStorage.setItem("token", res.data.token);
-                                            setAuth(true);
-                                            toast.success("Login successful");
-                                        }
-                                    )
-                                    .catch(
-                                        err => {
-                                            setAuth(false);
-                                            toast.error(err.response.data);
-                                        }
-                                    )
+                .then(
+                    res => {
+                        localStorage.setItem("token", res.data.token);
+                        setAuth(true);
+                        toast.success("Login successful");
+                    }
+                )
+                .catch(
+                    err => {
+                        setAuth(false);
+                        toast.error(err.response.data);
+                    }
+                )
 
         } catch (error) {
             console.error(error.message);

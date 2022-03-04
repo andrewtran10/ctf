@@ -2,7 +2,6 @@ import sys
 import pickle as pkl
 import psycopg2 as pg
 from csv import reader
-import os
 
 
 class DataTable:
@@ -69,16 +68,10 @@ def main():
         cur.close()
         conn.close()
 
-        with open(f"../pkl_files/u{id}/out", "w") as f:
-            f.write("success")
-
         print("success")
 
 
     except:
-        with open(f"../pkl_files/u{id}/out", "w") as f:
-            f.write("fail")
-
         print("fail")
 
 main()

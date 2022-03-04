@@ -1,12 +1,12 @@
 import { React, Fragment } from 'react';
 import { useState, useEffect } from 'react';
 
-import { Grid, InputLabel, MenuItem, TextField } from '@mui/material';
+import { Grid, InputLabel, MenuItem } from '@mui/material';
 import { Select, Button } from '@mui/material';
 import { Typography } from '@mui/material';
 import { FormControl, Input } from '@mui/material';
 
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Register from './Register';
 
 import axios from 'axios';
@@ -26,6 +26,7 @@ const Dashboard = ({setAuth}) =>  {
     const [employeeData, setEmployeeData] = useState(defaultVals);
     const [table, setTable] = useState("");
     const [file, setFile] = useState(null);
+    const [inputKey, setInputKey] = useState(Date.now());
 
     const getEmployeeData =  async () => {
         try {
@@ -38,6 +39,8 @@ const Dashboard = ({setAuth}) =>  {
                     res => res.json()
                 ).then(
                     res => setEmployeeData(res)
+                ).catch(
+                    () => {setAuth(false)}
                 );
                 
         } catch (error) {
@@ -89,6 +92,8 @@ const Dashboard = ({setAuth}) =>  {
     }
 
     const handleUpload = async () => {
+        setInputKey(Date.now());
+
         const formData = new FormData();
         formData.append("pickle_file", file);
         formData.append("id", employeeData.id);
@@ -101,10 +106,11 @@ const Dashboard = ({setAuth}) =>  {
                     headers: { "Content-Type": "multipart/form-data" , "token": localStorage.token}
                 })
                 .then(res => {
-                    toast.success("File successfully uploaded to database");
+                    toast.success(`File successfully uploaded to database`);
+                    console.log(res.data);
                 })
                 .catch(err => {
-                    toast.error("Error in uploading file or table already exists with that name");
+                    toast.error(`Error: ${err.response.data}`);
                 })
                 
         } catch (error) {
@@ -116,7 +122,7 @@ const Dashboard = ({setAuth}) =>  {
 
     useEffect(() => {
         getEmployeeData();
-    });
+    }, [file, table]);
 
     return (
         <Fragment>
@@ -162,6 +168,7 @@ const Dashboard = ({setAuth}) =>  {
                             name='pkl_file'
                             type='file'
                             onChange={fileChange}
+                            key={inputKey}
                         />
                         <Button
                                 variant="contained"

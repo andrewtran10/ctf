@@ -11,7 +11,7 @@ router.post("/register", async (req, res) => {
         const employee = await pool.query("SELECT * FROM employee WHERE id = $1", [id]);
 
         if (employee.rows.length !== 0) {
-            return res.status(401).json("Employee ID already in use");
+            return res.status(405).json("Employee ID already in use");
         }
 
         const saltRound = 10;
@@ -40,16 +40,20 @@ router.post("/login", async (req, res) => {
     try {
         const {id, pass} = req.body;
 
+        if (!Number.isInteger(Number(id))) {
+            return res.status(400).send("ID must be integer");
+        }
+
         const employee = await pool.query("SELECt * FROM employee WHERE id = $1", [id]);
 
         if (employee.rows.length === 0) {
-            return res.status(401).send("No matching id");
+            return res.status(400).send("No matching id");
         }
 
         const validPassword = await bcrypt.compare(pass, employee.rows[0].pass);
         
         if (!validPassword) {
-            return res.status(401).send("Incorrect password");
+            return res.status(400).send("Incorrect password");
         }
 
         const token = jwtGenerator(employee.rows[0].id);
@@ -64,10 +68,10 @@ router.post("/login", async (req, res) => {
 
 router.get("/verify", authorization, async (req, res) => {
     try {
-        res.json(true);
+        res.send(true);
     } catch (error) {
         console.error(error.message);
-        res.status(500).json("Server error");
+        res.status(500).send("Server error");
     }
 })
 
