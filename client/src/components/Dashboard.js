@@ -95,7 +95,7 @@ const Dashboard = ({setAuth}) =>  {
         setInputKey(Date.now());
 
         const formData = new FormData();
-        formData.append("pickle_file", file);
+        formData.append("file", file);
         formData.append("id", employeeData.id);
         formData.append("token", localStorage.token);
         try {
@@ -160,7 +160,7 @@ const Dashboard = ({setAuth}) =>  {
                     alignItems="center"
                 >
                     <Grid item>
-                        <Typography variant='h5'>Use pickle file to upload to database</Typography>
+                        <Typography variant='h5'>Upload to database</Typography>
                     </Grid>
 
                     <Grid item>
@@ -169,6 +169,7 @@ const Dashboard = ({setAuth}) =>  {
                             type='file'
                             onChange={fileChange}
                             key={inputKey}
+                            accept=".pkl"
                         />
                         <Button
                                 variant="contained"
