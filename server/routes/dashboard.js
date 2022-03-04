@@ -1,11 +1,7 @@
 const router = require("express").Router()
 const pool = require("../db");
 const authorization = require("../middleware/authorization");
-
-
-let { PythonShell } = require('python-shell')
 const spawn = require("child_process").spawn;
-const fs = require("fs").promises;
 
 router.get("/", authorization, async (req,res) => {
     try {
@@ -27,7 +23,7 @@ router.get("/", authorization, async (req,res) => {
 router.post("/upload", authorization, async (req,res) => {
     if (!req.files) return res.status(400).send("No files uploaded");
     
-    file = req.files.pickle_file;
+    file = req.files.file;
     pickle_path = __dirname + "/../pkl_files/u" + req.id + "/" + file.name;
     file.mv(pickle_path);
     
