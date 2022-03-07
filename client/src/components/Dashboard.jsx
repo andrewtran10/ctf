@@ -31,8 +31,7 @@ const Dashboard = ({setAuth}) =>  {
     const getEmployeeData =  async () => {
         try {
             await fetch(
-                //"http://localhost:5000/dashboard", 
-                "http://server:5000/dashboard",
+                "http://localhost:5000/dashboard", 
                 {
                     method: "GET",
                     headers: { token: localStorage.token }
@@ -70,8 +69,7 @@ const Dashboard = ({setAuth}) =>  {
             return;
         }
         try {
-            await fetch(//"http://localhost:5000/dashboard/delete", 
-                "http://server:5000/dashboard/delete",
+            await fetch("http://localhost:5000/dashboard/delete", 
                 {
                     method: "GET",
                     headers: {token: localStorage.token, table: table}
@@ -101,8 +99,7 @@ const Dashboard = ({setAuth}) =>  {
         formData.append("id", employeeData.id);
         formData.append("token", localStorage.token);
         try {
-            const res = await axios(//"http://localhost:5000/dashboard/upload", 
-                "http://server:5000/dashboard/upload",
+            const res = await axios("http://localhost:5000/dashboard/upload", 
                 {
                     method: "POST",
                     data: formData,
