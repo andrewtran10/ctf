@@ -52,7 +52,8 @@ const Register = () =>  {
 
             */
 
-            const res = await axios.post("http://localhost:5000/auth/register", formValues)
+            const res = await axios.post(//"http://localhost:5000/auth/register", formValues)
+                                        "http://server:5000/auth/register", formValues)
                                     .then(res => {
                                         toast.success("Created new employeein database");
                                     })

@@ -27,7 +27,8 @@ function App() {
   useEffect(async ()=>{
     try {
       const res = await fetch(
-        "http://localhost:5000/auth/verify", 
+        //"http://localhost:5000/auth/verify", 
+        "http://server:5000/auth/verify",
         {
           method: "GET",
           headers: {token: localStorage.token}

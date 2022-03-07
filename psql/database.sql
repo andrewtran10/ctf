@@ -9,10 +9,8 @@ CREATE TABLE employee(
 );
 
 INSERT INTO employee VALUES(1, 'andrew', 'tran', 'password', true);
+CREATE USER u1;
 
-CREATE USER andrew WITH PASSWORD 'password';
-
-CREATE role non_admin
-CREATE role admin
-
-DROP USER andrew;
+--CREATE role non_admin
+--CREATE role admin
+--DROP USER andrew;

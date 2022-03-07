@@ -12,7 +12,7 @@ def main():
         file.close()
 
         
-        conn = pg.connect(dbname="ctf", user=f"u{id}")
+        conn = pg.connect(host="db", dbname="ctf", user=f"u{id}")
         cur = conn.cursor()
         
         createQuery = f"CREATE TABLE {table.name} (idx int primary key, "

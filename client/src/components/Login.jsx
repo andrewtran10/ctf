@@ -23,7 +23,8 @@ const Login = ({setAuth}) =>  {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {            
-            const res = await axios.post("http://localhost:5000/auth/login", formValues)
+            const res = await axios.post(//"http://localhost:5000/auth/login", formValues)
+                "http://server:5000/auth/login", formValues)
                 .then(
                     res => {
                         localStorage.setItem("token", res.data.token);
