@@ -14,12 +14,17 @@ router.post("/register", async (req, res) => {
             return res.status(405).json("Employee ID already in use");
         }
 
-        const saltRound = 10;
-        const salt = await bcrypt.genSalt(saltRound);
-        const hashed_pass = await bcrypt.hash(pass, salt);
+        regex = "^[a-zA-Z0-9.]*$";
+        if (pass.match(regex) == null) {
+            return res.status(405).send("Letters and numbers for passwords only");
+        }
+
+        //const saltRound = 10;
+        //const salt = await bcrypt.genSalt(saltRound);
+        //const hashed_pass = await bcrypt.hash(pass, salt);
         
         await pool.query("BEGIN TRANSACTION");
-        const new_employee = await pool.query("INSERT INTO employee VALUES($1, $2, $3, $4, $5) RETURNING *", [id, fname, lname, hashed_pass, admin]);
+        const new_employee = await pool.query("INSERT INTO employee VALUES($1, $2, $3, $4, $5) RETURNING *", [id, fname, lname, pass, admin]);
         let new_user = "CREATE USER u" + id.toString() + " WITH PASSWORD '" + pass + "'";
         admin ? new_user += "IN role admin" : new_user += "IN role non_admin";
         await pool.query(new_user);
@@ -44,17 +49,18 @@ router.post("/login", async (req, res) => {
             return res.status(400).send("ID must be integer");
         }
 
-        const employee = await pool.query("SELECt * FROM employee WHERE id = $1", [id]);
+        const employee = await pool.query("SELECt * FROM employee WHERE id = $1 AND pass = $2", [id, pass]);
 
         if (employee.rows.length === 0) {
-            return res.status(400).send("No matching id");
+            return res.status(400).send("No matching id/password");
         }
 
-        const validPassword = await bcrypt.compare(pass, employee.rows[0].pass);
+        /*const validPassword = await bcrypt.compare(pass, employee.rows[0].pass);
         
         if (!validPassword) {
             return res.status(400).send("Incorrect password");
-        }
+        }*/
+
 
         const token = jwtGenerator(employee.rows[0].id);
 
