@@ -17,13 +17,8 @@ services:
         ipv4_address: 172.20.30.11
     
   db:
-    image: 'postgres:latest'
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER: postgres
-      - POSTGRES_PASSWORD: postgres
-      - POSTGRES_DB: default_database
+    image: ctf_db:latest
+    restart: always
     networks:
       nw0:
         ipv4_address: 172.20.30.12
