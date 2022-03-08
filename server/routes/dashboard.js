@@ -21,6 +21,7 @@ router.get("/", authorization, async (req,res) => {
 });
 
 router.post("/upload", authorization, async (req,res) => {
+    console.log(req);
     if (!req.files) return res.status(400).send("No files uploaded");
     
     file = req.files.file;
@@ -30,6 +31,7 @@ router.post("/upload", authorization, async (req,res) => {
     pythonProcess = spawn('python3', [__dirname + "/../utils/parseData.py", pickle_path, req.id], {cwd: __dirname});
     pythonProcess.stdout.on('data', data => {
         out = data.toString('utf-8').slice(0,-1);
+        console.log(out);
         if (out == "success"){
             res.status(200).send("File uploaded!");
         } else {

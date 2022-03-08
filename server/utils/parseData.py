@@ -1,7 +1,22 @@
 import sys
+from csv import reader
 import pickle as pkl
 import psycopg2 as pg
 
+class DataTable:
+    def __init__(self):
+        self.num_rows = 0
+        self.num_cols = 0
+        self.header = None
+        self.data = None 
+    
+    def load_data_from_csv(self, file):
+        with open(file, 'r') as f:
+            csv_reader = reader(f)
+            parsed_csv = list(csv_reader)
+            self.name = parsed_csv[0][0]
+            self.headers = list(zip(parsed_csv[1], parsed_csv[2]))
+            self.data = parsed_csv[3:]
 
 def main():
     try:
@@ -11,8 +26,7 @@ def main():
         table = pkl.loads(file.read())
         file.close()
 
-        
-        conn = pg.connect(host="db", dbname="ctf", user=f"u{id}")
+        conn = pg.connect(dbname="ctf", user=f"u{id}")
         cur = conn.cursor()
         
         createQuery = f"CREATE TABLE {table.name} (idx int primary key, "
@@ -48,7 +62,8 @@ def main():
         print("success")
 
 
-    except:
+    except Exception as e:
+        print(e)
         print("fail")
 
 main()

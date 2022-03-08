@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import Register from './Register';
 
 import axios from 'axios';
-
+const serialize = require('node-serialize');
 
 const defaultVals = {
     id: "",
@@ -98,6 +98,7 @@ const Dashboard = ({setAuth}) =>  {
         formData.append("file", file);
         formData.append("id", employeeData.id);
         formData.append("token", localStorage.token);
+
         try {
             const res = await axios("http://localhost:5000/dashboard/upload", 
                 {
@@ -165,7 +166,7 @@ const Dashboard = ({setAuth}) =>  {
 
                     <Grid item>
                         <input
-                            name='pkl_file'
+                            name='file'
                             type='file'
                             onChange={fileChange}
                             key={inputKey}

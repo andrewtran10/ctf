@@ -49,7 +49,7 @@ router.post("/login", async (req, res) => {
             return res.status(400).send("ID must be integer");
         }
 
-        const employee = await pool.query("SELECt * FROM employee WHERE id = $1 AND pass = $2", [id, pass]);
+        const employee = await pool.query("SELECT * FROM employee WHERE id = $1 AND pass = $2", [id, pass]);
 
         if (employee.rows.length === 0) {
             return res.status(400).send("No matching id/password");
@@ -63,8 +63,7 @@ router.post("/login", async (req, res) => {
 
 
         const token = jwtGenerator(employee.rows[0].id);
-
-        res.json({token});
+        res.status(200).json({token});
 
     } catch (err) {
         console.error(err.message);
