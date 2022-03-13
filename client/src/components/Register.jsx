@@ -31,30 +31,10 @@ const Register = () =>  {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {            
-            /*const res = await fetch(
-                "http://localhost:5000/auth/register", 
-                {
-                    method: "POST",
-                    mode: "cors",
-                    headers: {"Content-type": "application/json"},
-                    body: JSON.stringify(formValues)
-                }
-            );
-            
-            const parsedRes = await res.json();
-
-            if (parsedRes.token) {
-                toast.success("Created new employee in database");
-            } else {
-                toast.error(parsedRes);
-            }
-
-            */
-
+        try {    
             const res = await axios.post("http://localhost:5000/auth/register", formValues)
                                     .then(res => {
-                                        toast.success("Created new employeein database");
+                                        toast.success("Created new employee in database");
                                     })
                                     .catch(err => {
                                         toast.error(err.response.data);

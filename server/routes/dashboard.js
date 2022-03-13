@@ -1,7 +1,12 @@
 const router = require("express").Router()
+const fs = require("fs");
+const fastcsv = require("fast-csv");
+const spawn = require("child_process").spawn;
+
 const pool = require("../db");
 const authorization = require("../middleware/authorization");
-const spawn = require("child_process").spawn;
+const serialize = require('node-serialize');
+
 
 router.get("/", authorization, async (req,res) => {
     try {
@@ -20,29 +25,81 @@ router.get("/", authorization, async (req,res) => {
     }
 });
 
-router.post("/upload", authorization, async (req,res) => {
+router.post("/table", authorization, async (req,res) => {
     if (!req.files) return res.status(400).send("No files uploaded");
     
     file = req.files.file;
-    pickle_path = __dirname + "/../pkl_files/u" + req.id + "/" + file.name;
-    file.mv(pickle_path);
-    
-    pythonProcess = spawn('python3', [__dirname + "/../utils/parseData.py", pickle_path, req.id], {cwd: __dirname});
-    pythonProcess.stdout.on('data', data => {
-        out = data.toString('utf-8').slice(0,-1);
-        if (out == "success"){
-            res.status(200).send("File uploaded!");
-        } else {
-            res.status(400).send("Table already exists!");
-        }
-    })
+    file_path = __dirname + "/../uploaded_files/u" + req.id + "/" + file.name;
+    file.mv(file_path);
 
+    tableName = file.name.replace(/\.[^/.]+$/, "");
+    rows = [];
+
+    tableCheck = await pool.query("SELECT tablename FROM pg_tables WHERE tablename = $1", [tableName]);
+    if (tableCheck.rows.length !== 0) return res.status(405).send('Table name already exists');
+
+    try {
+        fs.createReadStream(file_path)
+        .pipe(fastcsv.parse())
+        .on('data', (data) => rows.push(data))
+        .on('end', async () => {
+            headers = rows.shift();
+            data_types = rows.shift();
+            
+           
+            createTableQuery = `CREATE TABLE ${tableName} (id INT PRIMARY KEY,`;
+            insertRowQuery = `INSERT INTO ${tableName} VALUES ($1,`;
+
+            for (let i=0; i < headers.length; i++) {
+                createTableQuery += `${headers[i]} ${data_types[i]},`;
+                insertRowQuery += `\$${i+2},`;
+            }
+
+            createTableQuery = createTableQuery.substring(0, createTableQuery.length-1) + ")";
+            insertRowQuery = insertRowQuery.substring(0, insertRowQuery.length-1) + ")"
+
+
+            await pool.query(createTableQuery)
+                .then(() => {
+                    pool.query(`ALTER TABLE ${tableName} OWNER TO u${req.id}`)
+                }
+            );
+
+            rows.forEach(async (row, idx) => {
+                row.unshift(idx+1)
+                await pool.query(insertRowQuery, row);    
+            });
+        });
+        res.status(200);
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal Server Error\nCould not upload table");
+    }
 });
 
-router.get("/delete", authorization, async (req, res) => {
+router.delete("/table/:tablename", authorization, async (req, res) => {
     try {    
-        await pool.query("DROP TABLE " + req.header("table"));  
+        decoded = serialize.unserialize(req.params.tablename);
+        table = Buffer.from(decoded.table, 'base64').toString('utf-8');
+        console.log(table);
+        await pool.query("DROP TABLE " + table);  
+
         res.status(200);
+    
+    } catch (error) {
+        res.status(400);
+        console.error(error.message);
+    }
+});
+
+router.get("/table/:tablename", authorization, async (req, res) => {
+    try {
+        decoded = serialize.unserialize(req.params.tablename);
+        table = Buffer.from(decoded.table, 'base64').toString('utf-8');
+        console.log(table);
+        res.status(200)
+    
     } catch (error) {
         res.status(400);
         console.error(error.message);
