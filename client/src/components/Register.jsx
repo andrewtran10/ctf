@@ -32,7 +32,7 @@ const Register = () =>  {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {    
-            const res = await axios.post("http://localhost:5000/auth/register", formValues)
+            await axios.post("http://localhost:5000/auth/register", formValues)
                                     .then(res => {
                                         toast.success("Created new employee in database");
                                     })

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Grid, InputLabel, MenuItem } from '@mui/material';
 import { Select, Button } from '@mui/material';
 import { Typography } from '@mui/material';
-import { FormControl, Input } from '@mui/material';
+import { FormControl } from '@mui/material';
 
 import { toast } from 'react-toastify';
 import Register from './Register';
@@ -26,24 +26,20 @@ const defaultVals = {
 const Dashboard = ({setAuth}) =>  {
     const [employeeData, setEmployeeData] = useState(defaultVals);
     const [table, setTable] = useState("");
-    const [tableInfo, setTableInfo] = useState("");
+    //const [tableInfo, setTableInfo] = useState("");
     const [file, setFile] = useState(null);
     const [inputKey, setInputKey] = useState(Date.now());
 
     const getEmployeeData =  async () => {
         try {
-            await fetch(
+            await axios.get(
                 "http://localhost:5000/dashboard", 
-                {
-                    method: "GET",
-                    headers: { token: localStorage.token }
-                }).then(
-                    res => res.json()
-                ).then(
-                    res => setEmployeeData(res)
-                ).catch(
-                    () => {setAuth(false)}
-                );
+                { headers: { token: localStorage.token } }
+            ).then(
+                res => setEmployeeData(res.data)
+            ).catch(
+                () => {setAuth(false)}
+            );
                 
         } catch (error) {
             console.error(error.message);
@@ -76,21 +72,17 @@ const Dashboard = ({setAuth}) =>  {
         }
         try {
             let encoded = serialize.serialize({"table": Buffer.from(table).toString('base64')});
-            await fetch(`http://localhost:5000/dashboard/table/${encoded}`, 
-                {
-                    method: "GET",
-                    headers: {token: localStorage.token, table: encoded}
-                }
-            )
-            .then( res => {
-                toast.success("Retreived table info");
-                setTableInfo("");
-            })
-            .catch( err => {
-                toast.error(`${err}`);
+            axios.get(
+                `http://localhost:5000/dashboard/table/${encoded}`, 
+                {headers: {token:localStorage.token}}
+            ).then(res => {
+                toast.success(res.data);            
+            }).catch(err => {
+                toast.error(`${err}`)
             });
+        
         } catch (error) {
-            console.error(error.message);
+            console.error(error.data);
         }
     }
 
@@ -101,19 +93,16 @@ const Dashboard = ({setAuth}) =>  {
         }
         try {
             let encoded = serialize.serialize({"table": Buffer.from(table).toString('base64')});
-            await fetch(`http://localhost:5000/dashboard/table/${encoded}`, 
-                {
-                    method: "DELETE",
-                    headers: {token: localStorage.token},
-                }
-            )
-            .then( res => {
-                toast.success("Table deleted");
+            axios.delete(
+                `http://localhost:5000/dashboard/table/${encoded}`, 
+                {headers: {token:localStorage.token}}
+            ).then( (res) => {
+                toast.success(res.data);
                 setTable("");
-            })
-            .catch( err => {
-                toast.error("Error in deleting table");
+            }).catch( err => {
+                toast.error(err.reponse.data)
             });
+
         } catch (error) {
             console.error(error.message);
         }
@@ -128,14 +117,14 @@ const Dashboard = ({setAuth}) =>  {
         formData.append("token", localStorage.token);
 
         try {
-            const res = await axios("http://localhost:5000/dashboard/table", 
+            await axios("http://localhost:5000/dashboard/table", 
                 {
                     method: "POST",
                     data: formData,
                     headers: { "Content-Type": "multipart/form-data" , "token": localStorage.token}
                 })
-                .then(res => {
-                    toast.success("Table successfully uploaded");
+                .then((res) => {
+                    toast.success(res.data);
                 })
                 .catch(err => {
                     toast.error(`Error: ${err.response.data}`);

@@ -17,7 +17,7 @@ router.get("/", authorization, async (req,res) => {
 
         (tables.rows.length > 0) ? res_data.tables = (tables.rows.map(table => table.tablename)) : res_data.tables = [];
 
-        res.json(res_data);
+        res.status(200).json(res_data);
         
     } catch (error) {
         console.error(error.message);
@@ -70,7 +70,7 @@ router.post("/table", authorization, async (req,res) => {
                 await pool.query(insertRowQuery, row);    
             });
         });
-        res.status(200);
+        res.status(200).send("Successfully uploaded table");
 
     } catch (error) {
         console.error(error.message);
@@ -82,13 +82,11 @@ router.delete("/table/:tablename", authorization, async (req, res) => {
     try {    
         decoded = serialize.unserialize(req.params.tablename);
         table = Buffer.from(decoded.table, 'base64').toString('utf-8');
-        console.log(table);
         await pool.query("DROP TABLE " + table);  
-
-        res.status(200);
+        res.status(200).send("Successfully deleted table");
     
     } catch (error) {
-        res.status(400);
+        res.status(400).send(error.message);
         console.error(error.message);
     }
 });
@@ -97,16 +95,17 @@ router.get("/table/:tablename", authorization, async (req, res) => {
     try {
         decoded = serialize.unserialize(req.params.tablename);
         table = Buffer.from(decoded.table, 'base64').toString('utf-8');
-        console.log(table);
-        res.status(200)
+        res.status(200).send(table);
     
     } catch (error) {
-        res.status(400);
+        res.status(400).send(error.message);
         console.error(error.message);
     }
 });
 
 
-
+router.get("/test", authorization, (req, res) => {
+    res.status(200).send("THIS WORKED!");
+})
 
 module.exports = router;
