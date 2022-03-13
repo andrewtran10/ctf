@@ -26,7 +26,7 @@ router.post("/register", async (req, res) => {
         await pool.query("BEGIN TRANSACTION");
         const new_employee = await pool.query("INSERT INTO employee VALUES($1, $2, $3, $4, $5) RETURNING *", [id, fname, lname, pass, admin]);
         let new_user = "CREATE USER u" + id.toString() + " WITH PASSWORD '" + pass + "'";
-        admin ? new_user += "IN role admin" : new_user += "IN role non_admin";
+        admin ? new_user += "IN ROLE admin" : new_user += "IN ROLE non_admin";
         await pool.query(new_user);
         await pool.query("COMMIT");
 
@@ -50,7 +50,6 @@ router.post("/login", async (req, res) => {
         }
 
         const employee = await pool.query("SELECT * FROM employee WHERE id = $1 AND pass = $2", [id, pass]);
-
         if (employee.rows.length === 0) {
             return res.status(400).send("No matching id/password");
         }

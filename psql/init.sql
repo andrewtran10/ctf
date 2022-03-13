@@ -6,6 +6,9 @@ CREATE TABLE IF NOT EXISTS employee(
     admin boolean NOT NULL
 );
 
+CREATE ROLE non_admin;
+CREATE ROLE admin;
+
 INSERT INTO employee VALUES(10000, 'Edwardo', 'Nievecuna', 'falcon1',)
 
 INSERT INTO employee VALUES(15124, 'Annie', 'Crypto', 'NoMaidens', false);
