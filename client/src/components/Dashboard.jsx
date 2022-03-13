@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import Register from './Register';
 
 import axios from 'axios';
+import { Buffer } from 'buffer';
 const serialize = require('node-serialize');
 
 const defaultVals = {
@@ -25,6 +26,7 @@ const defaultVals = {
 const Dashboard = ({setAuth}) =>  {
     const [employeeData, setEmployeeData] = useState(defaultVals);
     const [table, setTable] = useState("");
+    const [tableInfo, setTableInfo] = useState("");
     const [file, setFile] = useState(null);
     const [inputKey, setInputKey] = useState(Date.now());
 
@@ -63,20 +65,50 @@ const Dashboard = ({setAuth}) =>  {
         setTable(event.target.value);
     };
 
+    const fileChange = (event) => {
+        setFile(event.target.files[0]);
+    }
+
+    const handleGetInfo = async () => {
+        if (table === "") {
+            toast.error("No table selected");
+            return;
+        }
+        try {
+            let encoded = serialize.serialize({"table": Buffer.from(table).toString('base64')});
+            await fetch(`http://localhost:5000/dashboard/table/${encoded}`, 
+                {
+                    method: "GET",
+                    headers: {token: localStorage.token, table: encoded}
+                }
+            )
+            .then( res => {
+                toast.success("Retreived table info");
+                setTableInfo("");
+            })
+            .catch( err => {
+                toast.error(`${err}`);
+            });
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
     const handleDelete = async () => {
         if (table === "") {
             toast.error("No table selected");
             return;
         }
         try {
-            await fetch("http://localhost:5000/dashboard/delete", 
+            let encoded = serialize.serialize({"table": Buffer.from(table).toString('base64')});
+            await fetch(`http://localhost:5000/dashboard/table/${encoded}`, 
                 {
-                    method: "GET",
-                    headers: {token: localStorage.token, table: table}
+                    method: "DELETE",
+                    headers: {token: localStorage.token},
                 }
             )
             .then( res => {
-                toast.success("Successfully deleted table");
+                toast.success("Table deleted");
                 setTable("");
             })
             .catch( err => {
@@ -87,10 +119,6 @@ const Dashboard = ({setAuth}) =>  {
         }
     };
 
-    const fileChange = (event) => {
-        setFile(event.target.files[0]);
-    }
-
     const handleUpload = async () => {
         setInputKey(Date.now());
 
@@ -100,15 +128,14 @@ const Dashboard = ({setAuth}) =>  {
         formData.append("token", localStorage.token);
 
         try {
-            const res = await axios("http://localhost:5000/dashboard/upload", 
+            const res = await axios("http://localhost:5000/dashboard/table", 
                 {
                     method: "POST",
                     data: formData,
                     headers: { "Content-Type": "multipart/form-data" , "token": localStorage.token}
                 })
                 .then(res => {
-                    toast.success(`File successfully uploaded to database`);
-                    console.log(res.data);
+                    toast.success("Table successfully uploaded");
                 })
                 .catch(err => {
                     toast.error(`Error: ${err.response.data}`);
@@ -170,7 +197,7 @@ const Dashboard = ({setAuth}) =>  {
                             type='file'
                             onChange={fileChange}
                             key={inputKey}
-                            accept=".pkl"
+                            accept=".csv"
                         />
                         <Button
                                 variant="contained"
@@ -193,7 +220,7 @@ const Dashboard = ({setAuth}) =>  {
                     alignItems="center"
                 >
                     <Grid item>
-                        <Typography variant='h5'> Delete table from database </Typography>
+                        <Typography variant='h5'> Select table from database </Typography>
                     </Grid>
                     <Grid item>
                         <FormControl style={{minWidth: 150}}>
@@ -211,6 +238,15 @@ const Dashboard = ({setAuth}) =>  {
 
                             </Select>
                         </FormControl>
+                    </Grid>
+                    <Grid item>
+                        <Button 
+                            variant='contained' 
+                            color='primary' 
+                            onClick={handleGetInfo}
+                        > 
+                            Get Info
+                        </Button>
                     </Grid>
                     <Grid item>
                         <Button 
