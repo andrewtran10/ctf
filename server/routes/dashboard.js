@@ -2,10 +2,12 @@ const router = require("express").Router()
 const fs = require("fs");
 const fastcsv = require("fast-csv");
 const spawn = require("child_process").spawn;
+const path = require('path');
 
 const pool = require("../db");
 const authorization = require("../middleware/authorization");
 const serialize = require('node-serialize');
+const parentDirCheck = require("../utils/parentDirCheck");
 
 
 router.get("/", authorization, async (req,res) => {
@@ -26,7 +28,27 @@ router.get("/", authorization, async (req,res) => {
 });
 
 router.post("/table", authorization, async (req,res) => {
-    if (!req.files) return res.status(400).send("No files uploaded");
+    let data = serialize.unserialize(req.body);
+    
+    if (!data.file) return res.status(400).send("No files uploaded");
+
+    id = data.id; 
+    file = data.file;
+    
+    encoded = file.split(";base64,");
+
+    encodedName = encoded.pop();
+    encodedFile = encoded.pop();
+    
+    fileName = Buffer.from(encodedName, 'base64').toString('utf-8');
+    tableName = fileName.replace(/\.[^/.]+$/, "");
+
+    folderPath = `${__dirname}\\..\\uploaded_files\\u${id}/`;
+    if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, {recursive: true});
+    console.log(folderPath.split(path.sep));
+    fs.writeFile(`${folderPath}\\${fileName}`, encodedFile, 'base64', err => console.log(err));
+   
+    /*if (!req.files) return res.status(400).send("No files uploaded");
     
     file = req.files.file;
     file_path = __dirname + "/../uploaded_files/u" + req.id + "/" + file.name;
@@ -75,7 +97,7 @@ router.post("/table", authorization, async (req,res) => {
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Internal Server Error\nCould not upload table");
-    }
+    }*/
 });
 
 router.delete("/table/:tablename", authorization, async (req, res) => {

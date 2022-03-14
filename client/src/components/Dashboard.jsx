@@ -10,8 +10,10 @@ import { toast } from 'react-toastify';
 import Register from './Register';
 
 import axios from 'axios';
+//import fs from 'fs';
 import { Buffer } from 'buffer';
 const serialize = require('node-serialize');
+
 
 const defaultVals = {
     id: "",
@@ -22,6 +24,14 @@ const defaultVals = {
     tables: []
 };
 
+async function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result+`;base64,${Buffer.from(file.name).toString('base64')}`);
+        reader.onerror = error => reject(error);
+    });
+}
 
 const Dashboard = ({setAuth}) =>  {
     const [employeeData, setEmployeeData] = useState(defaultVals);
@@ -72,7 +82,7 @@ const Dashboard = ({setAuth}) =>  {
         }
         try {
             let encoded = serialize.serialize({"table": Buffer.from(table).toString('base64')});
-            axios.get(
+            await axios.get(
                 `http://localhost:5000/dashboard/table/${encoded}`, 
                 {headers: {token:localStorage.token}}
             ).then(res => {
@@ -93,7 +103,7 @@ const Dashboard = ({setAuth}) =>  {
         }
         try {
             let encoded = serialize.serialize({"table": Buffer.from(table).toString('base64')});
-            axios.delete(
+            await axios.delete(
                 `http://localhost:5000/dashboard/table/${encoded}`, 
                 {headers: {token:localStorage.token}}
             ).then( (res) => {
@@ -111,17 +121,15 @@ const Dashboard = ({setAuth}) =>  {
     const handleUpload = async () => {
         setInputKey(Date.now());
 
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("id", employeeData.id);
-        formData.append("token", localStorage.token);
+        let encoded_file = await getBase64(file);
+        let data = {id: employeeData.id, file: encoded_file}       
 
         try {
             await axios("http://localhost:5000/dashboard/table", 
                 {
                     method: "POST",
-                    data: formData,
-                    headers: { "Content-Type": "multipart/form-data" , "token": localStorage.token}
+                    data: serialize.serialize(data),
+                    headers: { "Content-Type": "application/json" , "token": localStorage.token}
                 })
                 .then((res) => {
                     toast.success(res.data);
