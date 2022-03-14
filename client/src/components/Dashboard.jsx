@@ -24,7 +24,7 @@ const defaultVals = {
     tables: []
 };
 
-async function getBase64(file) {
+async function ftod(file) {
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
@@ -121,8 +121,13 @@ const Dashboard = ({setAuth}) =>  {
     const handleUpload = async () => {
         setInputKey(Date.now());
 
-        let encoded_file = await getBase64(file);
-        let data = {id: employeeData.id, file: encoded_file}       
+        const encoded_file = await ftod(file);
+        const data = {id: employeeData.id, file: encoded_file}     
+        
+        /*  const formData = new FormData();
+        formData.append("file", file);
+        formData.append("id", employeeData.id);
+        formData.append("token", localStorage.token);*/
 
         try {
             await axios("http://localhost:5000/dashboard/table", 
@@ -142,7 +147,7 @@ const Dashboard = ({setAuth}) =>  {
             console.error(error.message);
         }
 
-        setFile(null);
+        //setFile(null);
     };
 
     useEffect(() => {

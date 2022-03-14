@@ -29,9 +29,8 @@ router.get("/", authorization, async (req,res) => {
 
 router.post("/table", authorization, async (req,res) => {
     let data = serialize.unserialize(req.body);
-    
     if (!data.file) return res.status(400).send("No files uploaded");
-
+    
     id = data.id; 
     file = data.file;
     
@@ -43,25 +42,18 @@ router.post("/table", authorization, async (req,res) => {
     fileName = Buffer.from(encodedName, 'base64').toString('utf-8');
     tableName = fileName.replace(/\.[^/.]+$/, "");
 
-    folderPath = `${__dirname}\\..\\uploaded_files\\u${id}/`;
-    if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, {recursive: true});
-    console.log(folderPath.split(path.sep));
-    fs.writeFile(`${folderPath}\\${fileName}`, encodedFile, 'base64', err => console.log(err));
-   
-    /*if (!req.files) return res.status(400).send("No files uploaded");
+    folderPath = `${__dirname}/../uploaded_files/u${id}/`;
+    filePath = `${folderPath}/${fileName}`
     
-    file = req.files.file;
-    file_path = __dirname + "/../uploaded_files/u" + req.id + "/" + file.name;
-    file.mv(file_path);
-
-    tableName = file.name.replace(/\.[^/.]+$/, "");
+    if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, {recursive: true});
+    fs.writeFile(filePath, encodedFile, 'base64', (err) => {if (err) throw err});
+   
     rows = [];
-
     tableCheck = await pool.query("SELECT tablename FROM pg_tables WHERE tablename = $1", [tableName]);
     if (tableCheck.rows.length !== 0) return res.status(405).send('Table name already exists');
 
     try {
-        fs.createReadStream(file_path)
+        fs.createReadStream(filePath)
         .pipe(fastcsv.parse())
         .on('data', (data) => rows.push(data))
         .on('end', async () => {
@@ -96,8 +88,8 @@ router.post("/table", authorization, async (req,res) => {
 
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("Internal Server Error\nCould not upload table");
-    }*/
+        res.status(500).send(`Internal Server Error\n${error.message}`);
+    }
 });
 
 router.delete("/table/:tablename", authorization, async (req, res) => {
