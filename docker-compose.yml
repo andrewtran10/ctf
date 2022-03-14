@@ -1,7 +1,10 @@
 version: '3.9'
 services:
   client:
-    image: ctf_client:latest
+    container_name: ctf_client
+    build: 
+      context: ./client
+      dockerfile: client.dockerfile
     ports:
       - "3000:3000"
     networks:
@@ -9,7 +12,10 @@ services:
         ipv4_address: 172.20.30.10
   
   server:
-    image: ctf_server:latest
+    container_name: ctf_server
+    build: 
+      context: ./server
+      dockerfile: server.dockerfile
     ports:
       - "5000:5000"
     networks:
@@ -17,7 +23,10 @@ services:
         ipv4_address: 172.20.30.11
     
   db:
-    image: ctf_db:latest
+    container_name: ctf_db
+    build: 
+      context: ./psql
+      dockerfile: db.dockerfile
     restart: always
     networks:
       nw0:
