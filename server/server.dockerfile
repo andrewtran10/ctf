@@ -15,17 +15,21 @@ RUN npm install
 ADD middleware ./middleware
 ADD routes ./routes
 ADD utils ./utils
-ADD testing ./testing
 
 COPY server.js ./
 COPY db.js ./
 COPY .env ./
 
 COPY flag.txt ./
+COPY sneaky_flag.txt ./
 
-WORKDIR /home/server
-COPY flag(1).txt ./
+RUN chmod 000 sneaky_flag.txt
+RUN mv sneaky_flag.txt .sneaky_flag.txt
+RUN mv flag.txt .sneaky_flag.txt /home/server/
 
+RUN chown server:server /home/server
+
+USER server
 EXPOSE 5000
 CMD ["npm", "start"]
 
