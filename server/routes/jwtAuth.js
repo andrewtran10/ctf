@@ -79,4 +79,13 @@ router.get("/verify", authorization, async (req, res) => {
     }
 })
 
+router.get("/test", (req, res) => {
+    try {
+        res.status(200).send("Reached exposed API endpoint!");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+})
+
 module.exports = router;
