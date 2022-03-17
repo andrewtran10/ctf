@@ -1,26 +1,28 @@
 version: '3.9'
 services:
-  client:
-    container_name: client
+  attack_box:
+    container_name: attack_box
+    build:
+      context: ./attack_box
+      dockerfile: attack.dockerfile
+    ports:
+      - "22:22"
+    networks:
+      nw0:
+        ipv4_address: 172.20.30.9
+
+  web_tool:
+    container_name: web_tool
     build: 
-      context: ./client
-      dockerfile: client.dockerfile
+      context: ./app
+      dockerfile: app.dockerfile
     ports:
       - "3000:3000"
+      - "5000:5000"
     networks:
       nw0:
         ipv4_address: 172.20.30.10
   
-  server:
-    container_name: server
-    build: 
-      context: ./server
-      dockerfile: server.dockerfile
-    ports:
-      - "5000:5000"
-    networks:
-      nw0:
-        ipv4_address: 172.20.30.11
     
   db:
     container_name: db
