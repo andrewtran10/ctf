@@ -14,16 +14,14 @@ services:
   web_tool:
     container_name: web_tool
     build: 
-      context: ./app
-      dockerfile: app.dockerfile
+      context: ./server
+      dockerfile: server.dockerfile
     ports:
-      - "3000:3000"
       - "5000:5000"
     networks:
       nw0:
         ipv4_address: 172.20.30.10
   
-    
   db:
     container_name: db
     build: 
