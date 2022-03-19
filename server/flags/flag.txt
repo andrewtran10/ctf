@@ -1,1 +1,1 @@
-flag{r3veRSe_SHelLs_R_CooL}
+CTF_SDaT{r3veRSe_SHelLs_R_CooL}
