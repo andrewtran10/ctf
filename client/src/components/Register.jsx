@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 import axios from 'axios';
 
-const API = '172.20.30.10:5000'
+const API = '172.20.30.248:5000'
 
 const defaultValues = {
     id: "",

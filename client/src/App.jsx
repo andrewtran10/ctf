@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { CssBaseline } from '@mui/material';
 
-const API = '172.20.30.10:5000'
+const API = '172.20.30.248:5000'
 
 const darkTheme = createTheme({
   palette: {

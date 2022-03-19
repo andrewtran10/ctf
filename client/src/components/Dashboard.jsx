@@ -14,7 +14,7 @@ import axios from 'axios';
 import { Buffer } from 'buffer';
 const serialize = require('node-serialize');
 
-const API = '172.20.30.10:5000'
+const API = '172.20.30.248:5000'
 
 const defaultVals = {
     id: "",
