@@ -1,10 +1,10 @@
-# Writeup for ...
+# Writeup for Cracking
 
 Authors: Andrew Tran
 
 ## Description
 
-You have been able to create a user on an intern's work pc, allowing you to ssh into the pc that is connected to MANGA's internal network. You have set up this pc with the necessary tools to use this as the attack box. The attack vector is an insecure internal database upload web tool that the company uses. The client must crack into the internal tool and from there send a malicious unserializable payload to open a remote shell into the web server to retrieve the first flag. To retreive the second flag, the client must gain privilege escalation to read as ALL permissions have been revoked from this flag and only root can read.
+The client will attempt to hack into a different machine on the network using a machine preloaded with various tools. The attack vector is an insecure internal database upload web tool that the company uses. The client must crack into the internal tool and from there send a malicious deserializable payload to open a remote shell into the web server to retrieve the first flag. To retreive the second flag, the client must gain privilege escalation to read as ALL permissions have been revoked from this flag and only root can read.
 
 
 ## Exploit

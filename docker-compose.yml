@@ -9,7 +9,7 @@ services:
       - "22:22"
     networks:
       nw0:
-        ipv4_address: 172.20.30.9
+        ipv4_address: 172.20.30.247
 
   web_tool:
     container_name: web_tool
@@ -20,7 +20,7 @@ services:
       - "5000:5000"
     networks:
       nw0:
-        ipv4_address: 172.20.30.10
+        ipv4_address: 172.20.30.248
   
   db:
     container_name: db
@@ -30,7 +30,7 @@ services:
     restart: always
     networks:
       nw0:
-        ipv4_address: 172.20.30.12
+        ipv4_address: 172.20.30.249
 
 networks:
   nw0:
