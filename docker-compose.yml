@@ -3,8 +3,8 @@ services:
   attack_box:
     container_name: attack_box
     build:
-      context: ./attack_box
-      dockerfile: attack.dockerfile
+      context: ../../../
+      dockerfile: challenges/andtran/attack_box/attack.dockerfile
     ports:
       - "22:22"
     networks:
@@ -14,8 +14,8 @@ services:
   web_tool:
     container_name: web_tool
     build: 
-      context: ./server
-      dockerfile: server.dockerfile
+      context: ../../../
+      dockerfile: challenges/andtran/server/server.dockerfile
     ports:
       - "5000:5000"
     networks:
@@ -25,8 +25,8 @@ services:
   db:
     container_name: db
     build: 
-      context: ./psql
-      dockerfile: db.dockerfile
+      context: ../../../
+      dockerfile: challenges/andtran/psql/db.dockerfile
     restart: always
     networks:
       nw0:
