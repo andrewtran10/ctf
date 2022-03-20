@@ -8,7 +8,7 @@ RUN usermod -aG node web_tool
 RUN chmod +s /bin/gzip
 RUN chmod +s /usr/bin/diff
 
-WORKDIR /home/web_tool/app/server
+WORKDIR /home/web_tool/server
 COPY ./package.json ./
 RUN npm install
 
@@ -22,11 +22,12 @@ COPY ./db.js ./
 COPY ./.env ./
 
 # FLAGS
-WORKDIR /home/web_tool/app
+WORKDIR /home/web_tool/
 ADD ./flags ./flags
 RUN chmod 000 ./flags/.sneaky_flag.txt
 
-WORKDIR /home/web_tool/app/server
+RUN chown web_tool:web_tool /home/web_tool/server
+WORKDIR /home/web_tool/server
 USER web_tool
 EXPOSE 5000
 CMD ["npm", "start"]
