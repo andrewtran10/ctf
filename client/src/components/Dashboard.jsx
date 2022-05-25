@@ -14,6 +14,7 @@ import axios from 'axios';
 import { Buffer } from 'buffer';
 const serialize = require('node-serialize');
 
+const API = '172.20.30.248:5000'
 
 const defaultVals = {
     id: "",
@@ -43,7 +44,7 @@ const Dashboard = ({setAuth}) =>  {
     const getEmployeeData =  async () => {
         try {
             await axios.get(
-                "http://localhost:5000/dashboard", 
+                `http://${API}/dashboard`, 
                 { headers: { token: localStorage.token } }
             ).then(
                 res => setEmployeeData(res.data)
@@ -83,7 +84,7 @@ const Dashboard = ({setAuth}) =>  {
         try {
             let encoded = serialize.serialize({"table": Buffer.from(table).toString('base64')});
             await axios.get(
-                `http://localhost:5000/dashboard/table/${encoded}`, 
+                `http://${API}/dashboard/table/${encoded}`, 
                 {headers: {token:localStorage.token}}
             ).then(res => {
                 toast.success(res.data);            
@@ -104,7 +105,7 @@ const Dashboard = ({setAuth}) =>  {
         try {
             let encoded = serialize.serialize({"table": Buffer.from(table).toString('base64')});
             await axios.delete(
-                `http://localhost:5000/dashboard/table/${encoded}`, 
+                `http://${API}/dashboard/table/${encoded}`, 
                 {headers: {token:localStorage.token}}
             ).then( (res) => {
                 toast.success(res.data);
@@ -130,7 +131,7 @@ const Dashboard = ({setAuth}) =>  {
         formData.append("token", localStorage.token);*/
 
         try {
-            await axios("http://localhost:5000/dashboard/table", 
+            await axios(`http://${API}/dashboard/table`, 
                 {
                     method: "POST",
                     data: serialize.serialize(data),

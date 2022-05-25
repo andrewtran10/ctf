@@ -13,6 +13,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { CssBaseline } from '@mui/material';
 
+const API = '172.20.30.248:5000'
+
 const darkTheme = createTheme({
   palette: {
     mode: 'dark'
@@ -27,7 +29,7 @@ function App() {
   useEffect(async ()=>{
     try {
       const res = await fetch(
-        "http://localhost:5000/auth/verify", 
+        `http://${API}/auth/verify`, 
         {
           method: "GET",
           headers: {token: localStorage.token}

@@ -7,6 +7,8 @@ import { toast } from 'react-toastify';
 
 import axios from 'axios';
 
+const API = '172.20.30.248:5000'
+
 const defaultValues = {
     id: "",
     fname: "",
@@ -32,7 +34,7 @@ const Register = () =>  {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {    
-            await axios.post("http://localhost:5000/auth/register", formValues)
+            await axios.post(`http://${API}/auth/register`, formValues)
                                     .then(res => {
                                         toast.success("Created new employee in database");
                                     })

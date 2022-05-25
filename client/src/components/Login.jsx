@@ -1,10 +1,11 @@
 import React, { Fragment , useState } from 'react';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Alert } from '@mui/material';
 import { Box, Grid, Typography } from '@mui/material';
 
-import { toast } from 'react-toastify';
 
 import axios from 'axios';
+
+const API = '172.20.30.248:5000'
 
 const defaultValues = {
     id: "",
@@ -13,6 +14,7 @@ const defaultValues = {
 
 const Login = ({setAuth}) =>  {
     const [formValues, setFormValues] = useState(defaultValues);
+    const [alert, setAlert] = useState(false);
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
@@ -23,18 +25,17 @@ const Login = ({setAuth}) =>  {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {            
-            await axios.post("http://localhost:5000/auth/login", formValues)
+            await axios.post(`http://${API}/auth/login`, formValues)
                 .then(
                     res => {
                         localStorage.setItem("token", res.data.token);
                         setAuth(true);
-                        toast.success("Login successful");
                     }
                 )
                 .catch(
                     err => {
                         setAuth(false);
-                        toast.error(err.response.data);
+                        setAlert(true);
                     }
                 )
 
@@ -81,6 +82,8 @@ const Login = ({setAuth}) =>  {
                         <Button variant="contained" color="primary" type="submit">
                             Submit
                         </Button>
+                        <br/>
+                        {alert !== false  && <Alert severity="error">Login failed</Alert>}
                     </form>
                 </Grid>
         </Fragment>

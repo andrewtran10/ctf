@@ -1,0 +1,6 @@
+ping
+ncat
+nmap
+wfuzz
+burpsuite
+midori browser

@@ -1,0 +1,38 @@
+name: ...
+author: Andrew Tran
+
+description: |
+  Complete the previous challenge before doing this one. Now that you have found your way to the holy land, see if you can find the hidden sword only accessible to the chosen one!
+
+  **Connection Instructions**:
+    
+  Do the following:
+
+  $ `ssh -L localhost:<local port>:172.20.30.247:22 -p 56151 <username>@cs561.cs.umass.edu`
+
+  For example, run
+
+  $ `ssh -L localhost:22:172.20.30.247:22 -p 56151 user@cs561.cs.umass.edu`
+
+  This will forward the local port 22 on your machine to `172.20.30.247:22` on the swarm network, where this challenge is hosted.
+  
+  You can try connecting to the attack box using:
+
+  $ `ssh hackerman@localhost`
+
+value: 100
+category: atran
+flag: CTF_SDaT{S3tU1d_pR1v_Esc}
+
+hints:
+  - {
+    content: "Find what does not want to be found...what is hidden",
+    cost: 5
+  }
+  - {
+    content: "If only the chosen one can pull the sword from the stone, can you pretend to be the chosen one somehow?",
+    cost: 10
+  }
+
+# administrative
+container_name: web_tool

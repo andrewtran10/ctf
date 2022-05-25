@@ -1,0 +1,46 @@
+name: ...
+author: Andrew Tran
+
+description: |
+  You have been able to create a user (hackerman) on an intern's work pc, allowing you to ssh into the pc that is connected to MANGA's internal network. You have set up this pc with the necessary tools to use this as the attack box. Can you retreive the flag hosted on a different machine on the network?
+  
+  **Connection Instructions**:
+    
+  Do the following:
+
+  $ `ssh -L localhost:<local port>:172.20.30.247:22 -p 56151 <username>@cs561.cs.umass.edu`
+
+  For example, run
+
+  $ `ssh -L localhost:22:172.20.30.247:22 -p 56151 user@cs561.cs.umass.edu`
+
+  This will forward the local port 22 on your machine to `172.20.30.247:22` on the swarm network, where this challenge is hosted.
+  
+  You can try connecting to the attack box using:
+
+  $ `ssh hackerman@localhost`
+
+value: 100
+category: atran
+flag: CTF_SDaT{r3veRSe_SHelLs_R_CooL}
+
+hints:
+  - {
+    content: "Enumerate the machine for information about the intern who's PC you've hacked into. Is there any information that may help you progress forward?",
+    cost: 5
+  }
+  - {
+    content: "Enumerate the company's internal network to find out more about other possible machines, where they are hosted, and what services they may be providing!",
+    cost: 10
+  }
+  - {
+    content: "CRACK your way into a service provided on a machine in the company's internal network and dig to the SOURCE to find potential vulnerabilities!",
+    cost: 20
+  }
+  - {
+    content: "Cereal can be very dangerous..." ,
+    cost: 40
+  }
+
+# administrative
+container_name: web_tool

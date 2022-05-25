@@ -1,4 +1,8 @@
 .env
+.vscode
 node_modules
 uploaded_files
-.vscode
+build
+
+burpsuite_community_linux_v2022_2_3.sh
+rockyou.txt

@@ -1,0 +1,9 @@
+The web tool is hosted on the company's network and can be accessed through the MIDORI web browser. 
+We don't use chrome or firefox because they take up too much space...
+
+You must login with your employee ID and password.
+
+The web tool takes in csv files where the first line is the table's title.
+The second line is the column headers. The third line is the data types of the columns. 
+The subsequent lines are the data of the table. 
+
